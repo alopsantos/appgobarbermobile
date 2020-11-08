@@ -14,6 +14,7 @@ import {
   Alert,
 } from 'react-native';
 
+import { useAuth } from '../../hooks/auth';
 import getValidationErrors from '../../utils/getValidationErros';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -39,6 +40,9 @@ const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const navigation = useNavigation();
 
+  const {signIn, user } = useAuth();
+  console.log(user);
+
   const handleSignIn = useCallback(async (data: SignInFormData) => {
     try {
       formRef.current?.setErrors({});
@@ -53,10 +57,10 @@ const SignIn: React.FC = () => {
       await schema.validate(data, {
         abortEarly: false,
       });
-      // await signIn({
-      //   email: data.email,
-      //   password: data.password,
-      // });
+      await signIn({
+        email: data.email,
+        password: data.password,
+      });
       // history.push('/dashboard');
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
@@ -69,7 +73,7 @@ const SignIn: React.FC = () => {
         'Ocorreu um erro ao fazer login, cheque as credenciais.',
       );
     }
-  }, []);
+  }, [SignIn]);
   return (
     <>
       <KeyboardAvoidingView
